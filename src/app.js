@@ -8,12 +8,11 @@ async function copyFile() {
 
   if (!source || !dest) {
     console.error('Please provide both source and destination paths.');
-
-    return;
+    process.exit(1);
   }
 
   if (source === dest) {
-    return;
+    process.exit(0);
   }
 
   try {
@@ -21,25 +20,18 @@ async function copyFile() {
 
     if (stats.isDirectory()) {
       console.error('Source path is a directory, not a file.');
-
-      return;
+      process.exit(1);
     }
 
-    try {
-      await cp(source, dest);
-    } catch (error) {
-      console.error(`Error copying file: ${error.message}`);
-    }
+    await cp(source, dest);
   } catch (error) {
     if (error.code === 'ENOENT') {
       console.error('Source file does not exist.');
-
-      return;
     } else {
       console.error(error.message);
     }
 
-    process.exit(0);
+    process.exit(1);
   }
 }
 
